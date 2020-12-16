@@ -166,7 +166,7 @@ public class RenderScriptProcessor implements RenderScriptProcessorInterface
         yuvTypeBuilder.setYuvFormat(imageformat);
 
         //create the argb output allocation type
-        Builder rgbTypeBuilder = new Builder(renderScriptManager.GetRS(), Element.RGBA_8888(renderScriptManager.GetRS()));
+        Builder rgbTypeBuilder = new Builder(renderScriptManager.GetRS(), Element.RGB_888(renderScriptManager.GetRS()));
         rgbTypeBuilder.setX(width);
         rgbTypeBuilder.setY(height);
 
