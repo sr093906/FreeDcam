@@ -1,6 +1,8 @@
 package freed.views;
 import android.content.Context;
+import android.graphics.Matrix;
 import android.graphics.Point;
+import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -31,11 +33,12 @@ import javax.microedition.khronos.opengles.GL10;
 public class MainRenderer implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameAvailableListener {
     private final String vss_default = "" +
             "attribute vec2 vPosition;\n" +
-            "attribute vec2 vTexCoord;\n" +
+            "attribute vec4 vTexCoord;\n" +
+            "uniform mat4 uTexRotateMatrix;\n" +
             "varying vec2 texCoord;\n" +
             "void main() {\n" +
-            "  texCoord = vTexCoord;\n" +
-            "  gl_Position = vec4 ( vPosition.x, vPosition.y, 0.0, 1.0 );\n" +
+            "  texCoord = vTexCoord.xy;\n" +
+            "  gl_Position = uTexRotateMatrix * vec4 ( vPosition.x, vPosition.y, 0.0, 1.0 );\n" +
             "}";
 
     private final String fss_default = "" +
@@ -58,6 +61,7 @@ public class MainRenderer implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
     private boolean mUpdateST = false;
 
     private GLPreview mView;
+    private float[] mTexRotateMatrix = new float[] {1, 0, 0, 0,   0, 1, 0, 0,   0, 0, 1, 0,   0, 0, 0, 1};
 
     MainRenderer(GLPreview view) {
         mView = view;
@@ -84,6 +88,8 @@ public class MainRenderer implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
         }
 
         GLES20.glUseProgram(hProgram);
+        int trmh = GLES20.glGetUniformLocation ( hProgram, "uTexRotateMatrix" );
+        GLES20.glUniformMatrix4fv(trmh, 1, false, mTexRotateMatrix, 0);
 
         int ph = GLES20.glGetAttribLocation(hProgram, "vPosition");
         int tch = GLES20.glGetAttribLocation(hProgram, "vTexCoord");
@@ -170,5 +176,30 @@ public class MainRenderer implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
         GLES20.glLinkProgram(program);
 
         return program;
+    }
+
+    public void setOrientation(int or)
+    {
+        android.opengl.Matrix.setRotateM(mTexRotateMatrix, 0,  or, 0f, 0f, 1f);
+    }
+
+
+    RectF mLastImageRect = new RectF();
+    RectF inputRect = new RectF();
+    public void scale(int in_width, int in_height, int out_width, int out_height, int rotation)
+    {
+        int difw = out_width - in_width;
+        int difh = out_height - in_height;
+
+        inputRect.left = difw/2;
+        inputRect.top = difh/2;
+        inputRect.right = in_width;
+        inputRect.bottom = in_height;
+        if (mLastImageRect != inputRect) {
+            GLES20.glViewport((int) inputRect.left, (int) inputRect.top, (int) inputRect.width(), (int) inputRect.height());
+
+            mLastImageRect.set(inputRect);
+        }
+
     }
 }

@@ -124,7 +124,17 @@ public class GLPreview extends GLSurfaceView {
 
     }
 
+    public void setOrientation(int or)
+    {
+        mRenderer.setOrientation(or);
+    }
+
     public void setSurfaceTextureListener(TextureView.SurfaceTextureListener l) {
         this.surfaceTextureListener = l;
+    }
+
+    public void scale(int in_width, int in_height, int out_width, int out_height, int or)
+    {
+        mRenderer.scale(in_width,in_height,out_width,out_height,or);
     }
 }
