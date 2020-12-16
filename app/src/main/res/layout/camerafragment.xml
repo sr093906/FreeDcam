@@ -14,7 +14,7 @@
 
     <view
         android:id="@+id/autofitview"
-        class="freed.views.AutoFitTextureView"
+        class="freed.views.GLPreview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="false"

@@ -53,6 +53,7 @@ import freed.settings.SettingsManager;
 import freed.utils.Log;
 import freed.viewer.screenslide.views.MyHistogram;
 import freed.views.AutoFitTextureView;
+import freed.views.GLPreview;
 
 
 /**
@@ -66,7 +67,7 @@ public class Camera2Fragment extends CameraFragmentAbstract<ParameterHandlerApi2
     public static int MAX_PREVIEW_WIDTH = 1920;
     public static int MAX_PREVIEW_HEIGHT = 1080;
 
-    private AutoFitTextureView textureView;
+    private GLPreview textureView;
     private MyHistogram histogram;
     private final String TAG = Camera2Fragment.class.getSimpleName();
     private RenderScriptProcessor mProcessor;
@@ -237,7 +238,7 @@ public class Camera2Fragment extends CameraFragmentAbstract<ParameterHandlerApi2
         return mProcessor;
     }
 
-    public TextureView getTexturView()
+    public GLPreview getTexturView()
     {
         return textureView;
     }

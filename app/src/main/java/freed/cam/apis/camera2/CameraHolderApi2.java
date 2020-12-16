@@ -44,6 +44,7 @@ import freed.cam.apis.basecamera.FocusEvents;
 import freed.cam.events.CameraStateEvents;
 import freed.utils.Log;
 import freed.views.AutoFitTextureView;
+import freed.views.GLPreview;
 
 /**
  * Created by troop on 07.12.2014.
@@ -58,7 +59,7 @@ public class CameraHolderApi2 extends CameraHolderAbstract
 
     public CameraManager manager;
     public CameraDevice mCameraDevice;
-    public AutoFitTextureView textureView;
+    public GLPreview textureView;
 
     public StreamConfigurationMap map;
     public int CurrentCamera;
@@ -180,9 +181,9 @@ public class CameraHolderApi2 extends CameraHolderAbstract
         }
     }
 
-    public void SetSurface(TextureView surfaceHolder)
+    public void SetSurface(GLPreview surfaceHolder)
     {
-        textureView = (AutoFitTextureView) surfaceHolder;
+        textureView = (GLPreview) surfaceHolder;
     }
 
     @Override

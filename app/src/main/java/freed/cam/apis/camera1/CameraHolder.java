@@ -41,6 +41,7 @@ import freed.cam.events.CameraStateEvents;
 import freed.cam.ui.themesample.handler.UserMessageHandler;
 import freed.settings.Frameworks;
 import freed.utils.Log;
+import freed.views.GLPreview;
 
 /**
  * Created by troop on 15.08.2014.
@@ -163,7 +164,7 @@ public class CameraHolder extends CameraHolderAbstract implements CameraHolderIn
         return false;
     }
 
-    public void setTextureView(TextureView texturView)
+    public void setTextureView(GLPreview texturView)
     {
         try {
             mCamera.setPreviewTexture(texturView.getSurfaceTexture());

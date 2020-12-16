@@ -65,6 +65,7 @@ import freed.settings.SettingsManager;
 import freed.utils.Log;
 import freed.viewer.screenslide.views.MyHistogram;
 import freed.views.AutoFitTextureView;
+import freed.views.GLPreview;
 
 /**
  * Created by troop on 06.06.2015.
@@ -130,7 +131,7 @@ public class Camera1Fragment extends CameraFragmentAbstract<ParametersHandler, C
     private final String TAG = Camera1Fragment.class.getSimpleName();
     public RenderScriptProcessor focusPeakProcessorAp1;
     private boolean cameraIsOpen = false;
-    AutoFitTextureView textureView;
+    GLPreview textureView;
     MyHistogram histogram;
 
     public static Camera1Fragment getInstance()
