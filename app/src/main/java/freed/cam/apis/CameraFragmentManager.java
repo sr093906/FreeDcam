@@ -65,7 +65,7 @@ public class CameraFragmentManager implements CameraFeatureDetectorFragment.Feat
     private void replaceCameraFragment(Fragment fragment, String id)
     {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.setCustomAnimations(R.anim.left_to_right_enter, R.anim.left_to_right_exit);
+        //transaction.setCustomAnimations(R.anim.left_to_right_enter, R.anim.left_to_right_exit);
         transaction.replace(fragmentHolderId, fragment, id);
         transaction.commit();
     }
@@ -169,7 +169,7 @@ public class CameraFragmentManager implements CameraFeatureDetectorFragment.Feat
             //when its done in textureview/surfaceview destroy method its already to late and we get a security ex lack of privilege
             cameraFragment.stopCamera();
             FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.setCustomAnimations(R.anim.right_to_left_enter, R.anim.right_to_left_exit);
+            //transaction.setCustomAnimations(R.anim.right_to_left_enter, R.anim.right_to_left_exit);
             transaction.remove(cameraFragment);
             transaction.commit();
             cameraFragment = null;
