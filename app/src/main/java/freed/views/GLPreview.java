@@ -5,8 +5,11 @@ import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.view.TextureView;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import freed.cam.apis.camera1.Camera1Fragment;
 
@@ -126,7 +129,7 @@ public class GLPreview extends GLSurfaceView {
 
     public void setOrientation(int or)
     {
-        mRenderer.setOrientation(or);
+        //mRenderer.setOrientation(or);
     }
 
     public void setSurfaceTextureListener(TextureView.SurfaceTextureListener l) {
@@ -135,6 +138,13 @@ public class GLPreview extends GLSurfaceView {
 
     public void scale(int in_width, int in_height, int out_width, int out_height, int or)
     {
-        mRenderer.scale(in_width,in_height,out_width,out_height,or);
+        RelativeLayout.LayoutParams layout = new RelativeLayout.LayoutParams(in_width, in_height);
+        layout.height = in_height;
+        layout.width = in_width;
+        layout.leftMargin = (out_width - in_width)/2;
+        setLayoutParams(layout);
+        //setForegroundGravity(Gravity.CENTER);
+        //getHolder().setFixedSize(in_width, in_height);
+        //mRenderer.scale(in_width,in_height,out_width,out_height,or);
     }
 }
