@@ -1,17 +1,13 @@
-package freed.views;
+package freed.gl;
 
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.view.TextureView;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
-
-import freed.cam.apis.camera1.Camera1Fragment;
 
 public class GLPreview extends GLSurfaceView {
     MainRenderer mRenderer;
@@ -75,76 +71,24 @@ public class GLPreview extends GLSurfaceView {
         super.onPause();
     }
 
-    /**
-     * Sets the aspect ratio for this view. The size of the view will be measured based on the ratio
-     * calculated from the parameters. Note that the actual sizes of parameters don't matter, that
-     * is, calling setAspectRatio(2, 3) and setAspectRatio(4, 6) make the same result.
-     *
-     * @param width  Relative horizontal size
-     * @param height Relative vertical size
-     */
-    public void setAspectRatio(int width, int height) {
-        if (width < 0 || height < 0) {
-            throw new IllegalArgumentException("Size cannot be negative.");
-        }
-        mRatioWidth = width;
-        mRatioHeight = height;
-        this.post(() -> requestLayout());
-
-    }
-
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int width = MeasureSpec.getSize(widthMeasureSpec);
-        int height = MeasureSpec.getSize(heightMeasureSpec);
-
-        if (mRatioWidth == 0 || mRatioHeight == 0) {
-            setMeasuredDimension(width, height);
-        } else {
-            if (width > height * mRatioWidth / mRatioHeight) {
-                setMeasuredDimension(width, width * mRatioHeight / mRatioWidth);
-            } else {
-                setMeasuredDimension(height * mRatioWidth / mRatioHeight, height);
-            }
-            setMeasuredDimension(mRatioWidth, mRatioHeight);
-        }
-    }
 
     public SurfaceTexture getSurfaceTexture()
     {
         return mRenderer.getmSTexture();
     }
 
-    public void setTransform(Matrix matrix)
-    {
-
-    }
-
-    public void setOrientation(int or)
-    {
-        //mRenderer.setOrientation(or);
-    }
 
     public void setSurfaceTextureListener(TextureView.SurfaceTextureListener l) {
         this.surfaceTextureListener = l;
     }
 
-    public void scale(int in_width, int in_height, int out_width, int out_height, int or)
+    public void scale(int in_width, int in_height, int out_width)
     {
         RelativeLayout.LayoutParams layout = new RelativeLayout.LayoutParams(in_width, in_height);
         layout.height = in_height;
         layout.width = in_width;
         layout.leftMargin = (out_width - in_width)/2;
         setLayoutParams(layout);
-        //setForegroundGravity(Gravity.CENTER);
-        //getHolder().setFixedSize(in_width, in_height);
-        //mRenderer.scale(in_width,in_height,out_width,out_height,or);
+
     }
 }

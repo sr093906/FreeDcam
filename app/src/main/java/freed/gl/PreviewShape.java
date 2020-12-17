@@ -1,35 +1,18 @@
-package freed.views;
-import android.content.Context;
-import android.graphics.Point;
-import android.graphics.SurfaceTexture;
-import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraCaptureSession;
-import android.hardware.camera2.CameraCharacteristics;
-import android.hardware.camera2.CameraDevice;
-import android.hardware.camera2.CameraManager;
-import android.hardware.camera2.CaptureRequest;
-import android.hardware.camera2.params.StreamConfigurationMap;
+package freed.gl;
+
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLES30;
-import android.opengl.GLSurfaceView;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.util.Log;
-import android.util.Size;
-import android.view.Surface;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.util.Arrays;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
 
-public class MainRenderer implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameAvailableListener {
+public class PreviewShape
+{
+
     private final String vss_default =
             "in vec2 vPosition;\n" +
                     "in vec2 vTexCoord;\n" +
@@ -41,7 +24,6 @@ public class MainRenderer implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
             "#extension GL_OES_EGL_image_external_essl3 : require\n" +
                     "precision mediump float;\n" +
                     "uniform samplerExternalOES sTexture;\n" +
-                    //"uniform ivec2 outSize;" +
                     "out vec4 Output;" +
                     "void main() {\n" +
                     "  vec2 texSize = vec2(textureSize(sTexture, 0));" +
@@ -56,15 +38,8 @@ public class MainRenderer implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
     private FloatBuffer pTexCoord;
     private int hProgram;
 
-    private SurfaceTexture mSTexture;
-
-    private boolean mGLInit = false;
-    private boolean mUpdateST = false;
-
-    private GLPreview mView;
-
-    MainRenderer(GLPreview view) {
-        mView = view;
+    public PreviewShape()
+    {
         float[] vtmp = {1.0f, -1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f};
         float[] ttmp = {1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f};
         pVertex = ByteBuffer.allocateDirect(8 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
@@ -73,49 +48,6 @@ public class MainRenderer implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
         pTexCoord = ByteBuffer.allocateDirect(8 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
         pTexCoord.put(ttmp);
         pTexCoord.position(0);
-    }
-
-
-    public void onDrawFrame(GL10 unused) {
-        if (!mGLInit) return;
-        //GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-
-        synchronized (this) {
-            if (mUpdateST) {
-                mSTexture.updateTexImage();
-                mUpdateST = false;
-            }
-        }
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
-        //GLES20.glFlush();
-    }
-
-    @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        initTex();
-        mSTexture = new SurfaceTexture(hTex[0]);
-        mSTexture.setOnFrameAvailableListener(this);
-
-        hProgram = loadShader(vss_default, fss_default);
-        GLES20.glUseProgram(hProgram);
-        int ph = GLES20.glGetAttribLocation(hProgram, "vPosition");
-        int tch = GLES20.glGetAttribLocation(hProgram, "vTexCoord");
-        GLES20.glVertexAttribPointer(ph, 2, GLES20.GL_FLOAT, false, 4 * 2, pVertex);
-        GLES20.glVertexAttribPointer(tch, 2, GLES20.GL_FLOAT, false, 4 * 2, pTexCoord);
-        GLES20.glEnableVertexAttribArray(ph);
-        GLES20.glEnableVertexAttribArray(tch);
-        mGLInit = true;
-        mView.fireOnSurfaceTextureAvailable(mSTexture,0,0);
-    }
-
-    public void onSurfaceChanged(GL10 unused, int width, int height) {
-        GLES30.glViewport(0, 0, width, height);
-    }
-
-
-    public SurfaceTexture getmSTexture()
-    {
-        return mSTexture;
     }
 
     private void initTex() {
@@ -128,15 +60,26 @@ public class MainRenderer implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
         GLES20.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
     }
 
-    public synchronized void onFrameAvailable(SurfaceTexture st) {
-        mUpdateST = true;
-        mView.requestRender();
-    }
-    private static String GetSupportedVersion(){
-        return "#version 300 es";
+    public void draw()
+    {
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
     }
 
-    private static int loadShader(String vss, String fss) {
+    public int[] create()
+    {
+        initTex();
+        hProgram = loadShader(vss_default, fss_default);
+        GLES20.glUseProgram(hProgram);
+        int ph = GLES20.glGetAttribLocation(hProgram, "vPosition");
+        int tch = GLES20.glGetAttribLocation(hProgram, "vTexCoord");
+        GLES20.glVertexAttribPointer(ph, 2, GLES20.GL_FLOAT, false, 4 * 2, pVertex);
+        GLES20.glVertexAttribPointer(tch, 2, GLES20.GL_FLOAT, false, 4 * 2, pTexCoord);
+        GLES20.glEnableVertexAttribArray(ph);
+        GLES20.glEnableVertexAttribArray(tch);
+        return hTex;
+    }
+
+    private int loadShader(String vss, String fss) {
         String SupportedVersion = GetSupportedVersion();
         vss =SupportedVersion+"\n #line 1\n"+vss;
         fss =SupportedVersion+"\n #line 1\n"+fss;
@@ -169,5 +112,9 @@ public class MainRenderer implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
         GLES20.glLinkProgram(program);
 
         return program;
+    }
+
+    private String GetSupportedVersion(){
+        return "#version 300 es";
     }
 }

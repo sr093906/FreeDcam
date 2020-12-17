@@ -64,8 +64,7 @@ import freed.settings.SettingKeys;
 import freed.settings.SettingsManager;
 import freed.utils.Log;
 import freed.viewer.screenslide.views.MyHistogram;
-import freed.views.AutoFitTextureView;
-import freed.views.GLPreview;
+import freed.gl.GLPreview;
 
 /**
  * Created by troop on 06.06.2015.
@@ -122,8 +121,6 @@ public class Camera1Fragment extends CameraFragmentAbstract<ParametersHandler, C
     public void onCameraChangedAspectRatio(CameraStateEvents.CameraChangedAspectRatioEvent event)
     {
         Size size = event.size;
-        if (textureView != null)
-            textureView.setAspectRatio(size.width, size.height);
         if (focusPeakProcessorAp1 != null)
             focusPeakProcessorAp1.SetAspectRatio(size.width, size.height);
     }

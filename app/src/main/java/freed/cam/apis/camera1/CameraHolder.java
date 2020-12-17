@@ -26,7 +26,6 @@ import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
 import android.location.Location;
 import android.view.Surface;
-import android.view.TextureView;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -41,7 +40,7 @@ import freed.cam.events.CameraStateEvents;
 import freed.cam.ui.themesample.handler.UserMessageHandler;
 import freed.settings.Frameworks;
 import freed.utils.Log;
-import freed.views.GLPreview;
+import freed.gl.GLPreview;
 
 /**
  * Created by troop on 15.08.2014.

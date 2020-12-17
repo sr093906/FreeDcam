@@ -52,8 +52,7 @@ import freed.renderscript.RenderScriptProcessorInterface;
 import freed.settings.SettingsManager;
 import freed.utils.Log;
 import freed.viewer.screenslide.views.MyHistogram;
-import freed.views.AutoFitTextureView;
-import freed.views.GLPreview;
+import freed.gl.GLPreview;
 
 
 /**
