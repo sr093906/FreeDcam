@@ -663,12 +663,7 @@ public class CaptureSessionHandler
     {
         float dispWidth = 0;
         float dispHeight = 0;
-        if (renderscript)
-        {
-            dispWidth = cameraHolderApi2.textureView.getWidth();
-            dispHeight = cameraHolderApi2.textureView.getHeight();
-        }
-        else if (displaySize.x > displaySize.y) {
+        if (displaySize.x > displaySize.y) {
             dispWidth = displaySize.x;
             dispHeight = displaySize.y;
         }
