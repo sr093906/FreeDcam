@@ -262,8 +262,10 @@ public class FocusImageHandler extends AbstractFocusImageHandler
         if (wrapper == null || wrapper.getFocusHandler() == null)
             return;
         int width = wrapper.getPreviewWidth() + recthalf;
+        int marginLeft = wrapper.getMargineLeft();
+        int fullsize = marginLeft + width;
         if (wrapper == null || wrapper.getFocusHandler() == null || !touchToFocusIsSupported
-                || x < wrapper.getMargineLeft() || x > width) {
+                || x < marginLeft || x > fullsize) {
             focusImageView.setVisibility(View.GONE);
             return;
         }
