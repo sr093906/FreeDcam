@@ -1,5 +1,6 @@
 package freed.gl;
 import android.graphics.SurfaceTexture;
+import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 
@@ -33,7 +34,7 @@ public class MainRenderer implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
                 mUpdateST = false;
             }
         }
-        previewShape.draw();
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
         //GLES20.glFlush();
     }
 

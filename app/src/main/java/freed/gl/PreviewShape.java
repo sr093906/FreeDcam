@@ -42,11 +42,6 @@ public class PreviewShape
         GLES20.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
     }
 
-    public void draw()
-    {
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
-    }
-
     public int[] create()
     {
         initTex();
