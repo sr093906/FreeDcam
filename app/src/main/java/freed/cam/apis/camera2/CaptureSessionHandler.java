@@ -673,6 +673,7 @@ public class CaptureSessionHandler
             dispHeight = displaySize.x;
         }
         cameraHolderApi2.textureView.scale(w,h,(int)dispWidth);
+        cameraHolderApi2.textureView.setOrientation(rotation);
     }
 
     public void StartAePrecapture()

@@ -60,4 +60,9 @@ public class MainRenderer implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
         mUpdateST = true;
         mView.requestRender();
     }
+
+    public void setOrientation(int or)
+    {
+        previewShape.setOrientation(or);
+    }
 }

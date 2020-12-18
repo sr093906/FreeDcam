@@ -3,7 +3,7 @@ package freed.gl;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLES30;
-import android.util.Log;
+import android.opengl.Matrix;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -13,35 +13,17 @@ import java.nio.FloatBuffer;
 public class PreviewShape
 {
 
-    private final String vss_default =
-            "in vec2 vPosition;\n" +
-                    "in vec2 vTexCoord;\n" +
-                    "void main() {\n" +
-                    "  gl_Position = vec4 ( vPosition.x, vPosition.y, 0.0, 1.0 );\n" +
-                    "}";
-
-    private final String fss_default =
-            "#extension GL_OES_EGL_image_external_essl3 : require\n" +
-                    "precision mediump float;\n" +
-                    "uniform samplerExternalOES sTexture;\n" +
-                    "out vec4 Output;" +
-                    "void main() {\n" +
-                    "  vec2 texSize = vec2(textureSize(sTexture, 0));" +
-                    "  vec2 posScaled = (vec2(gl_FragCoord.xy));" +
-                    "  vec2 pos = posScaled/texSize;" +
-                    "  pos.y = 1.0-pos.y;" +
-                    "  Output = texture(sTexture,pos);\n" +
-                    "}";
-
     private int[] hTex;
     private FloatBuffer pVertex;
     private FloatBuffer pTexCoord;
     private int hProgram;
+    private float[] mTexRotateMatrix = new float[] {1, 0, 0, 0,   0, 1, 0, 0,   0, 0, 1, 0,   0, 0, 0, 1};
+    float[] vtmp = {1.0f, -1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f};
+    float[] ttmp = {1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f};
 
     public PreviewShape()
     {
-        float[] vtmp = {1.0f, -1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f};
-        float[] ttmp = {1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f};
+
         pVertex = ByteBuffer.allocateDirect(8 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
         pVertex.put(vtmp);
         pVertex.position(0);
@@ -68,43 +50,19 @@ public class PreviewShape
     public int[] create()
     {
         initTex();
-        hProgram = loadShader(vss_default, fss_default);
+        hProgram = loadShader(ShaderUtil.getPreviewVertex(), ShaderUtil.getPreviewFragment());
         GLES20.glUseProgram(hProgram);
+        int trmh = GLES20.glGetUniformLocation ( hProgram, "uTexRotateMatrix" );
+        GLES20.glUniformMatrix4fv(trmh, 1, false, mTexRotateMatrix, 0);
         int ph = GLES20.glGetAttribLocation(hProgram, "vPosition");
-        int tch = GLES20.glGetAttribLocation(hProgram, "vTexCoord");
         GLES20.glVertexAttribPointer(ph, 2, GLES20.GL_FLOAT, false, 4 * 2, pVertex);
-        GLES20.glVertexAttribPointer(tch, 2, GLES20.GL_FLOAT, false, 4 * 2, pTexCoord);
         GLES20.glEnableVertexAttribArray(ph);
-        GLES20.glEnableVertexAttribArray(tch);
         return hTex;
     }
 
     private int loadShader(String vss, String fss) {
-        String SupportedVersion = GetSupportedVersion();
-        vss =SupportedVersion+"\n #line 1\n"+vss;
-        fss =SupportedVersion+"\n #line 1\n"+fss;
-        int vshader = GLES20.glCreateShader(GLES20.GL_VERTEX_SHADER);
-        GLES20.glShaderSource(vshader, vss);
-        GLES20.glCompileShader(vshader);
-        int[] compiled = new int[1];
-        GLES20.glGetShaderiv(vshader, GLES20.GL_COMPILE_STATUS, compiled, 0);
-        if (compiled[0] == 0) {
-            Log.e("Shader", "Could not compile vshader");
-            Log.v("Shader", "Could not compile vshader:" + GLES20.glGetShaderInfoLog(vshader));
-            GLES20.glDeleteShader(vshader);
-            vshader = 0;
-        }
-
-        int fshader = GLES20.glCreateShader(GLES20.GL_FRAGMENT_SHADER);
-        GLES20.glShaderSource(fshader, fss);
-        GLES20.glCompileShader(fshader);
-        GLES20.glGetShaderiv(fshader, GLES20.GL_COMPILE_STATUS, compiled, 0);
-        if (compiled[0] == 0) {
-            Log.e("Shader", "Could not compile fshader");
-            Log.v("Shader", "Could not compile fshader:" + GLES20.glGetShaderInfoLog(fshader));
-            GLES20.glDeleteShader(fshader);
-            fshader = 0;
-        }
+        int vshader = ShaderUtil.createShader(vss, "Preview V",GLES20.GL_VERTEX_SHADER);
+        int fshader = ShaderUtil.createShader(fss,"Preview F",GLES20.GL_FRAGMENT_SHADER);
 
         int program = GLES20.glCreateProgram();
         GLES20.glAttachShader(program, vshader);
@@ -114,7 +72,8 @@ public class PreviewShape
         return program;
     }
 
-    private String GetSupportedVersion(){
-        return "#version 300 es";
+    public void setOrientation(int or)
+    {
+        android.opengl.Matrix.setRotateM(mTexRotateMatrix, 0,  or, 0f, 0f, 1f);
     }
 }

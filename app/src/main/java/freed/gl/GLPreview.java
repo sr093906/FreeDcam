@@ -89,6 +89,10 @@ public class GLPreview extends GLSurfaceView {
         layout.width = in_width;
         layout.leftMargin = (out_width - in_width)/2;
         setLayoutParams(layout);
+    }
 
+    public void setOrientation(int or)
+    {
+        mRenderer.setOrientation(or);
     }
 }
